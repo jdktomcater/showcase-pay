@@ -35,7 +35,8 @@ spring:
               args:
                 redis-rate-limiter.replenishRate: 100
                 redis-rate-limiter.burstCapacity: 200
-        
+                key-resolver: "#{@ipKeyResolver}"
+
         # Order Service Route
         - id: showcase-pay-order
           uri: lb://showcase-pay-order
@@ -47,6 +48,7 @@ spring:
               args:
                 redis-rate-limiter.replenishRate: 100
                 redis-rate-limiter.burstCapacity: 200
+                key-resolver: "#{@ipKeyResolver}"
         
         # Swagger Route for Payment Service
         - id: showcase-pay-payment-swagger
