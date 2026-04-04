@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ============================================
   # MySQL Database
@@ -52,8 +50,10 @@ services:
   # Nacos
   # ============================================
   nacos:
-    image: nacos/nacos-server:v2.3.0
+    # v2.2.0 has arm64 support. v2.3.0+ only supports amd64.
+    image: nacos/nacos-server:v2.2.0
     container_name: showcase-pay-nacos
+    platform: linux/amd64
     environment:
       MODE: standalone
       SPRING_DATASOURCE_PLATFORM: mysql
@@ -80,8 +80,9 @@ services:
   # RocketMQ NameServer
   # ============================================
   rocketmq-namesrv:
-    image: apache/rocketmq:5.1.4
+    image: apache/rocketmq:5.3.0
     container_name: showcase-pay-rocketmq-namesrv
+    platform: linux/amd64
     ports:
       - "9876:9876"
     environment:
@@ -90,17 +91,20 @@ services:
     networks:
       - showcase-pay-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9876"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      # NameServer doesn't support HTTP, use TCP port check instead
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9876"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
 
   # ============================================
   # RocketMQ Broker
   # ============================================
   rocketmq-broker:
-    image: apache/rocketmq:5.1.4
+    image: apache/rocketmq:5.3.0
     container_name: showcase-pay-rocketmq-broker
+    platform: linux/amd64
     ports:
       - "10909:10909"
       - "10911:10911"
@@ -114,6 +118,13 @@ services:
         condition: service_healthy
     networks:
       - showcase-pay-network
+    healthcheck:
+      # Use TCP port check for Broker
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/10911"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # ============================================
   # RocketMQ Console
@@ -121,6 +132,7 @@ services:
   rocketmq-console:
     image: apacherocketmq/rocketmq-dashboard:1.0.0
     container_name: showcase-pay-rocketmq-console
+    platform: linux/amd64
     ports:
       - "8090:8080"
     environment:

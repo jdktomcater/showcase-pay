@@ -9,7 +9,11 @@
       "mcp__idea__get_file_problems",
       "mcp__idea__find_files_by_name_keyword",
       "Bash(chmod *)",
-      "Bash(rm *)"
+      "Bash(rm *)",
+      "Bash(docker pull *)",
+      "Bash(docker images *)",
+      "Bash(grep *)",
+      "Bash(sed *)"
     ]
   },
   "$version": 3
