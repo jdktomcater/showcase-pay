@@ -1,7 +1,8 @@
 # ============================================
 # Dockerfile for Payment/Order Services
 # ============================================
-FROM eclipse-temurin:17-jre-alpine
+# Note: Using Ubuntu-based image (not alpine) for arm64/M1/M2 support
+FROM eclipse-temurin:17-jre
 
 # Maintainer
 LABEL maintainer="showcase-pay-team"
