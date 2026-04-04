@@ -13,7 +13,12 @@
       "Bash(docker pull *)",
       "Bash(docker images *)",
       "Bash(grep *)",
-      "Bash(sed *)"
+      "Bash(sed *)",
+      "Bash(docker logs *)",
+      "Bash(docker-compose *)",
+      "Bash(sleep *)",
+      "Bash(curl *)",
+      "Bash(docker ps *)"
     ]
   },
   "$version": 3
