@@ -23,7 +23,8 @@
       "Bash(done)",
       "Bash(docker exec *)",
       "Bash(python3 *)",
-      "Bash(docker inspect *)"
+      "Bash(docker inspect *)",
+      "Bash(docker restart *)"
     ]
   },
   "$version": 3

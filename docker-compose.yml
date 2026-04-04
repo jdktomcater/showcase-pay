@@ -236,6 +236,7 @@ services:
     ports:
       - "8080:8080"
     environment:
+      - APP_NAME=showcase-pay-gateway
       - SERVER_PORT=8080
       - NACOS_ADDR=nacos:8848
       - REDIS_HOST=redis
@@ -261,6 +262,7 @@ services:
     ports:
       - "8081:8083"
     environment:
+      - APP_NAME=showcase-pay-payment
       - SERVER_PORT=8083
       - NACOS_ADDR=nacos:8848
       - REDIS_HOST=redis
@@ -287,6 +289,7 @@ services:
     ports:
       - "8082:8082"
     environment:
+      - APP_NAME=showcase-pay-order
       - SERVER_PORT=8082
       - NACOS_ADDR=nacos:8848
       - REDIS_HOST=redis
