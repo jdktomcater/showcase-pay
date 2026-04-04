@@ -18,7 +18,12 @@
       "Bash(docker-compose *)",
       "Bash(sleep *)",
       "Bash(curl *)",
-      "Bash(docker ps *)"
+      "Bash(docker ps *)",
+      "Bash(do *)",
+      "Bash(done)",
+      "Bash(docker exec *)",
+      "Bash(python3 *)",
+      "Bash(docker inspect *)"
     ]
   },
   "$version": 3

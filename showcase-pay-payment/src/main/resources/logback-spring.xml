@@ -35,18 +35,9 @@
 
     <!-- Logstash Appender for ELK -->
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_HOST:127.0.0.1:4560}</destination>
+        <destination>127.0.0.1:4560</destination>
         <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>{"app_name":"${APP_NAME}"}</customFields>
-            <providers>
-                <pattern>
-                    <pattern>
-                        {
-                            "traceId": "%X{tid}"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
         </encoder>
         <connectionStrategy>
             <roundRobin>
