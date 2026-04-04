@@ -235,7 +235,7 @@ services:
   gateway:
     build:
       context: ./showcase-pay-gateway
-      dockerfile: ../Dockerfile.service
+      dockerfile: ../Dockerfile.gateway
     container_name: showcase-pay-gateway
     ports:
       - "8080:8080"

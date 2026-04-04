@@ -1,6 +1,7 @@
 package com.showcase.pay.gateway.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -35,12 +36,16 @@ public class RequestLogFilter implements GlobalFilter, Ordered {
         Instant startTime = Instant.now();
 
         // Generate or extract trace ID
-        String traceId = request.getHeaders().getFirst(TRACE_ID_HEADER);
-        if (traceId == null || traceId.isBlank()) {
-            traceId = UUID.randomUUID().toString().replace("-", "");
-        }
+        String rawTraceId = request.getHeaders().getFirst(TRACE_ID_HEADER);
+        final String traceId = (rawTraceId == null || rawTraceId.isBlank())
+                ? UUID.randomUUID().toString().replace("-", "")
+                : rawTraceId;
 
-        // Add trace ID to MDC for logging
+        // Add trace ID to MDC for logging (SkyWalking uses 'tid' key)
+        // Also store in Reactor Context for reactive thread propagation
+        MDC.put("tid", traceId);
+        MDC.put("traceId", traceId);
+
         String requestPath = request.getURI().getPath();
         HttpMethod method = request.getMethod();
         String clientIp = getClientIp(request);
@@ -62,17 +67,24 @@ public class RequestLogFilter implements GlobalFilter, Ordered {
         final HttpMethod logMethod = method;
         final String logPath = requestPath;
 
-        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-            Instant endTime = Instant.now();
-            Duration duration = Duration.between(startTime, endTime);
-            Integer statusCode = exchange.getResponse().getStatusCode() != null
-                    ? exchange.getResponse().getStatusCode().value()
-                    : 0;
-
-            // Log response
-            log.info("<<< [{}] {} {} | Status: {} | Duration: {}ms",
-                    logTraceId, logMethod, logPath, statusCode, duration.toMillis());
-        }));
+        return chain.filter(exchange)
+                .contextWrite(ctx -> ctx.put("traceId", traceId).put("tid", traceId))
+                .doOnSuccess(v -> {
+                    Instant endTime = Instant.now();
+                    Duration duration = Duration.between(startTime, endTime);
+                    Integer statusCode = exchange.getResponse().getStatusCode() != null
+                            ? exchange.getResponse().getStatusCode().value()
+                            : 0;
+                    log.info("<<< [{}] {} {} | Status: {} | Duration: {}ms",
+                            logTraceId, logMethod, logPath, statusCode, duration.toMillis());
+                })
+                .doOnError(e -> {
+                    log.error("<<< [{}] {} {} | Error: {}", logTraceId, logMethod, logPath, e.getMessage());
+                })
+                .doFinally(signal -> {
+                    MDC.remove("tid");
+                    MDC.remove("traceId");
+                });
     }
 
     @Override

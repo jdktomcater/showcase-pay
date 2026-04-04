@@ -1,0 +1,31 @@
+# ============================================
+# Dockerfile for Gateway Service
+# ============================================
+# Note: Using Ubuntu-based image (not alpine) for arm64/M1/M2 support
+FROM eclipse-temurin:17-jre
+
+LABEL maintainer="showcase-pay-team"
+
+# Environment variables
+ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC"
+ENV TZ=Asia/Shanghai
+ENV SERVER_PORT=8080
+ENV SW_AGENT_NAME=showcase-pay-gateway
+ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+
+# Set working directory
+WORKDIR /app
+
+# Add JAR file
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+
+# Expose port
+EXPOSE ${SERVER_PORT}
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --retries=5 --start-period=30s \
+  CMD wget --quiet --tries=1 --spider http://localhost:${SERVER_PORT}/actuator/health || exit 1
+
+# Entry point
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar app.jar"]

@@ -319,14 +319,14 @@ curl http://localhost:8083/actuator/health     # Payment Service
 
 Access the management consoles:
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| Nacos Console | http://localhost:8848/nacos | nacos / nacos |
-| RocketMQ Console | http://localhost:8090 | -- |
-| Kibana | http://localhost:5601 | -- |
-| SkyWalking UI | http://localhost:8085 | -- |
+| Service | URL                                   | Credentials |
+|---------|---------------------------------------|-------------|
+| Nacos Console | http://localhost:8848/nacos           | nacos / nacos |
+| RocketMQ Console | http://localhost:8090                 | -- |
+| Kibana | http://localhost:5601                 | -- |
+| SkyWalking UI | http://localhost:8085                 | -- |
 | Knife4j (Order API Docs) | http://localhost:8082/swagger-ui.html | -- |
-| Knife4j (Payment API Docs) | http://localhost:8083/swagger-ui.html | -- |
+| Knife4j (Payment API Docs) | http://localhost:8081/swagger-ui.html | -- |
 
 ### Stopping Services
 
@@ -367,7 +367,7 @@ docker-compose down
 All REST APIs are documented via Knife4j (Swagger UI). Access interactive API documentation at:
 
 - **Order Service API**: http://localhost:8082/swagger-ui.html
-- **Payment Service API**: http://localhost:8083/swagger-ui.html
+- **Payment Service API**: http://localhost:8081/swagger-ui.html
 
 Alternatively, access APIs through the Gateway at `http://localhost:8080`.
 
