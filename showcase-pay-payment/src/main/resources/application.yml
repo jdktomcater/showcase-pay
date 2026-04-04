@@ -1,0 +1,113 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: showcase-pay-payment
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+      config:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        file-extension: yaml
+        shared-configs:
+          - data-id: common-config.yaml
+            refresh: true
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/showcase_pay?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+          max-wait: 3000ms
+
+# MyBatis Plus Configuration
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.showcase.pay.payment.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# RocketMQ Configuration
+rocketmq:
+  name-server: ${ROCKETMQ_NAMESRV:127.0.0.1:9876}
+  producer:
+    group: payment-producer-group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 3
+    retry-times-when-send-async-failed: 3
+
+# Payment Gateway Configuration (mock values for demo)
+payment:
+  gateway:
+    alipay:
+      app-id: ${ALIPAY_APP_ID:mock_alipay_app_id}
+      private-key: ${ALIPAY_PRIVATE_KEY:mock_alipay_private_key}
+      alipay-public-key: ${ALIPAY_PUBLIC_KEY:mock_alipay_public_key}
+      server-url: https://openapi.alipaydev.com/gateway.do
+      notify-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/callback
+      return-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/return
+    wechat:
+      app-id: ${WECHAT_APP_ID:mock_wechat_app_id}
+      mch-id: ${WECHAT_MCH_ID:mock_wechat_mch_id}
+      api-key: ${WECHAT_API_KEY:mock_wechat_api_key}
+      notify-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/callback
+      cert-path: ${WECHAT_CERT_PATH:/etc/certs/wechat/}
+
+# Logging Configuration
+logging:
+  level:
+    com.showcase.pay: DEBUG
+    org.springframework: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{50} - %msg%n"
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+# Knife4j Configuration
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+knife4j:
+  enable: true
+  setting:
+    language: en

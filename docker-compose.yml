@@ -1,0 +1,307 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # MySQL Database
+  # ============================================
+  mysql:
+    image: mysql:8.0
+    container_name: showcase-pay-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: showcase_pay
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=1000
+    networks:
+      - showcase-pay-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Redis
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: showcase-pay-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - showcase-pay-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Nacos
+  # ============================================
+  nacos:
+    image: nacos/nacos-server:v2.3.0
+    container_name: showcase-pay-nacos
+    environment:
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_DB_NAME: nacos_config
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: root
+      TZ: Asia/Shanghai
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - showcase-pay-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ============================================
+  # RocketMQ NameServer
+  # ============================================
+  rocketmq-namesrv:
+    image: apache/rocketmq:5.1.4
+    container_name: showcase-pay-rocketmq-namesrv
+    ports:
+      - "9876:9876"
+    environment:
+      JAVA_OPT_EXT: "-Xms256m -Xmx256m"
+    command: sh mqnamesrv
+    networks:
+      - showcase-pay-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9876"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ============================================
+  # RocketMQ Broker
+  # ============================================
+  rocketmq-broker:
+    image: apache/rocketmq:5.1.4
+    container_name: showcase-pay-rocketmq-broker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      NAMESRV_ADDR: rocketmq-namesrv:9876
+      JAVA_OPT_EXT: "-Xms512m -Xmx512m"
+    command: sh mqbroker
+    depends_on:
+      rocketmq-namesrv:
+        condition: service_healthy
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # RocketMQ Console
+  # ============================================
+  rocketmq-console:
+    image: apacherocketmq/rocketmq-dashboard:1.0.0
+    container_name: showcase-pay-rocketmq-console
+    ports:
+      - "8090:8080"
+    environment:
+      JAVA_OPTS: "-Drocketmq.namesrv.addr=rocketmq-namesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
+    depends_on:
+      rocketmq-namesrv:
+        condition: service_healthy
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # Elasticsearch (for ELK)
+  # ============================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: showcase-pay-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - showcase-pay-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ============================================
+  # Logstash (for ELK)
+  # ============================================
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: showcase-pay-logstash
+    ports:
+      - "4560:4560"
+      - "5044:5044"
+    volumes:
+      - ./docker/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    environment:
+      - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # Kibana (for ELK)
+  # ============================================
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: showcase-pay-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # SkyWalking OAP
+  # ============================================
+  skywalking-oap:
+    image: apache/skywalking-oap-server:9.7.0
+    container_name: showcase-pay-skywalking-oap
+    ports:
+      - "11800:11800"
+      - "12800:12800"
+    environment:
+      SW_STORAGE: elasticsearch
+      SW_STORAGE_ES_CLUSTER_NODES: elasticsearch:9200
+      TZ: Asia/Shanghai
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # SkyWalking UI
+  # ============================================
+  skywalking-ui:
+    image: apache/skywalking-ui:9.7.0
+    container_name: showcase-pay-skywalking-ui
+    ports:
+      - "8085:8080"
+    environment:
+      SW_OAP_ADDRESS: http://skywalking-oap:12800
+    depends_on:
+      - skywalking-oap
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # Gateway Service
+  # ============================================
+  gateway:
+    build:
+      context: ./showcase-pay-gateway
+      dockerfile: ../Dockerfile.service
+    container_name: showcase-pay-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - NACOS_ADDR=nacos:8848
+      - REDIS_HOST=redis
+      - MYSQL_HOST=mysql
+      - ROCKETMQ_NAMESRV=rocketmq-namesrv:9876
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+      - TZ=Asia/Shanghai
+    depends_on:
+      - nacos
+      - redis
+      - mysql
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # Payment Service
+  # ============================================
+  payment:
+    build:
+      context: ./showcase-pay-payment
+      dockerfile: ../Dockerfile.service
+    container_name: showcase-pay-payment
+    ports:
+      - "8081:8081"
+    environment:
+      - NACOS_ADDR=nacos:8848
+      - REDIS_HOST=redis
+      - MYSQL_HOST=mysql
+      - ROCKETMQ_NAMESRV=rocketmq-namesrv:9876
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+      - TZ=Asia/Shanghai
+    depends_on:
+      - nacos
+      - redis
+      - mysql
+      - rocketmq-broker
+    networks:
+      - showcase-pay-network
+
+  # ============================================
+  # Order Service
+  # ============================================
+  order:
+    build:
+      context: ./showcase-pay-order
+      dockerfile: ../Dockerfile.service
+    container_name: showcase-pay-order
+    ports:
+      - "8082:8082"
+    environment:
+      - NACOS_ADDR=nacos:8848
+      - REDIS_HOST=redis
+      - MYSQL_HOST=mysql
+      - ROCKETMQ_NAMESRV=rocketmq-namesrv:9876
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+      - TZ=Asia/Shanghai
+    depends_on:
+      - nacos
+      - redis
+      - mysql
+      - rocketmq-broker
+    networks:
+      - showcase-pay-network
+
+volumes:
+  mysql-data:
+  redis-data:
+  es-data:
+
+networks:
+  showcase-pay-network:
+    driver: bridge

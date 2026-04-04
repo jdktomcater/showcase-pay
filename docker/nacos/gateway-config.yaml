@@ -1,0 +1,60 @@
+# ============================================
+# Gateway Service Configuration
+# ============================================
+
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+      routes:
+        # Payment Service Route
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 100
+                redis-rate-limiter.burstCapacity: 200
+                key-resolver: "#{@ipKeyResolver}"
+
+        # Order Service Route
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 100
+                redis-rate-limiter.burstCapacity: 200
+                key-resolver: "#{@ipKeyResolver}"
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+
+# Gateway specific logging
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: INFO
+
+# Service name for tracing
+SERVICE_NAME: gateway-service

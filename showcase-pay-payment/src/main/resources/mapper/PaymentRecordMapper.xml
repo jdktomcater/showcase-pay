@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.showcase.pay.payment.mapper.PaymentRecordMapper">
+
+    <!-- Result Map for PaymentRecord -->
+    <resultMap id="BaseResultMap" type="com.showcase.pay.payment.entity.PaymentRecord">
+        <id column="id" property="id"/>
+        <result column="payment_no" property="paymentNo"/>
+        <result column="order_id" property="orderId"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="amount" property="amount"/>
+        <result column="currency" property="currency"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="status" property="status"/>
+        <result column="transaction_id" property="transactionId"/>
+        <result column="channel_code" property="channelCode"/>
+        <result column="subject" property="subject"/>
+        <result column="body" property="body"/>
+        <result column="client_ip" property="clientIp"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="expire_time" property="expireTime"/>
+        <result column="error_code" property="errorCode"/>
+        <result column="error_msg" property="errorMsg"/>
+        <result column="extra_params" property="extraParams"/>
+        <result column="notify_url" property="notifyUrl"/>
+        <result column="retry_count" property="retryCount"/>
+        <result column="deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+    </resultMap>
+
+    <!-- Base Column List -->
+    <sql id="Base_Column_List">
+        id, payment_no, order_id, order_no, user_id, amount, currency,
+        payment_method, status, transaction_id, channel_code, subject, body,
+        client_ip, pay_time, expire_time, error_code, error_msg, extra_params,
+        notify_url, retry_count, deleted, create_time, update_time, create_by, update_by
+    </sql>
+
+    <!-- Select by Payment Number -->
+    <select id="selectByPaymentNo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM payment_record
+        WHERE payment_no = #{paymentNo}
+        AND deleted = 0
+        LIMIT 1
+    </select>
+
+    <!-- Select by Transaction ID -->
+    <select id="selectByTransactionId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM payment_record
+        WHERE transaction_id = #{transactionId}
+        AND deleted = 0
+        LIMIT 1
+    </select>
+
+    <!-- Select by Order ID -->
+    <select id="selectByOrderId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM payment_record
+        WHERE order_id = #{orderId}
+        AND deleted = 0
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <!-- Update Status by ID (with optimistic locking concept) -->
+    <update id="updateStatusById">
+        UPDATE payment_record
+        SET status = #{newStatus},
+            update_time = NOW()
+        WHERE id = #{id}
+        AND status = #{expectedStatus}
+        AND deleted = 0
+    </update>
+
+</mapper>

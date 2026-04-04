@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+
+    <!-- Console Appender with SkyWalking Trace ID -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%tid] %-5level %logger{50} - %msg%n</pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Logstash Appender for ELK -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST:127.0.0.1:4560}</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name":"${APP_NAME}"}</customFields>
+        </encoder>
+        <connectionStrategy>
+            <roundRobin>
+                <connectionTTL>5 minutes</connectionTTL>
+            </roundRobin>
+        </connectionStrategy>
+        <reconnectionDelay>10 seconds</reconnectionDelay>
+    </appender>
+
+    <!-- SkyWalking GRPC Log Appender -->
+    <appender name="SKYWALKING" class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.log.GRPCLogClientAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%tid] %-5level %logger{50} - %msg%n</pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Async Appender for Logstash -->
+    <appender name="ASYNC_LOGSTASH" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>1024</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="LOGSTASH"/>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_LOGSTASH"/>
+        <appender-ref ref="SKYWALKING"/>
+    </root>
+
+    <!-- Application Logger -->
+    <logger name="com.showcase.pay" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_LOGSTASH"/>
+        <appender-ref ref="SKYWALKING"/>
+    </logger>
+
+    <!-- Spring Cloud Gateway Logger -->
+    <logger name="org.springframework.cloud.gateway" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_LOGSTASH"/>
+    </logger>
+</configuration>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.showcase.pay.payment.mapper.PaymentMapper">
+
+    <!-- Result Map -->
+    <resultMap id="BaseResultMap" type="com.showcase.pay.payment.entity.Payment">
+        <id column="id" property="id"/>
+        <result column="payment_no" property="paymentNo"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="amount" property="amount"/>
+        <result column="currency" property="currency"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="status" property="status"/>
+        <result column="transaction_id" property="transactionId"/>
+        <result column="subject" property="subject"/>
+        <result column="description" property="description"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="expire_time" property="expireTime"/>
+        <result column="callback_url" property="callbackUrl"/>
+        <result column="extra_data" property="extraData"/>
+        <result column="error_message" property="errorMessage"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <!-- Base Column -->
+    <sql id="Base_Column_List">
+        id, payment_no, order_no, user_id, amount, currency, payment_method, status,
+        transaction_id, subject, description, pay_time, expire_time, callback_url,
+        extra_data, error_message, create_time, update_time, create_by, update_by, deleted
+    </sql>
+
+</mapper>

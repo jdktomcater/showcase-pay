@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: showcase-pay-order
+  cloud:
+    nacos:
+      config:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        file-extension: yaml
+        prefix: ${spring.application.name}
+        refresh-enabled: true
+        shared-configs:
+          - data-id: common-config.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        enabled: true
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}

@@ -1,0 +1,45 @@
+# ============================================
+# Order Service Configuration
+# ============================================
+
+server:
+  port: 8082
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/showcase_pay?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      pool-name: OrderHikariCP
+
+  cloud:
+    function:
+      definition: paymentResultConsumer;orderStatusUpdater
+
+# RocketMQ Configuration
+rocketmq:
+  name-server: ${ROCKETMQ_NAMESRV:localhost:9876}
+  producer:
+    group: order-producer-group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 3
+    retry-times-when-send-async-failed: 3
+
+# Order specific settings
+order:
+  payment:
+    timeout: 1800000  # 30 minutes
+    callback-retry: 3
+  mq:
+    topic: ORDER_TOPIC
+    consumer-group: order-consumer-group
+
+# Service name for tracing
+SERVICE_NAME: order-service

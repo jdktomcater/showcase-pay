@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__idea__list_directory_tree",
+      "Bash(mvn *)",
+      "mcp__idea__create_new_file",
+      "mcp__idea__find_files_by_glob",
+      "mcp__idea__build_project",
+      "mcp__idea__get_file_problems",
+      "mcp__idea__find_files_by_name_keyword",
+      "Bash(chmod *)",
+      "Bash(rm *)"
+    ]
+  },
+  "$version": 3
+}
