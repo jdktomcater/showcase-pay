@@ -1,8 +1,8 @@
 #!/bin/bash
 # ============================================
-# Rebuild and restart business services
-# Usage: ./scripts/rebuild-services.sh [service1 service2 ...]
-# If no service specified, rebuild all business services
+# Rebuild and restart business services only
+# Infrastructure services (MySQL, Redis, Nacos, etc.) are NOT restarted
+# Usage: ./scripts/rebuild-services.sh
 # ============================================
 
 set -e
@@ -22,46 +22,47 @@ echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Rebuild & Restart Business Services${NC}"
 echo -e "${GREEN}========================================${NC}"
 
-# Default services to rebuild
-SERVICES=("$@")
-if [ ${#SERVICES[@]} -eq 0 ]; then
-    SERVICES=(gateway payment order)
-fi
+# Step 1: Stop business services only
+echo -e "\n${YELLOW}[1/4] Stopping business services...${NC}"
+docker-compose stop gateway payment order
+echo -e "${GREEN}✓ Business services stopped${NC}"
 
-echo -e "${YELLOW}Target services: ${SERVICES[*]}${NC}"
-
-# Step 1: Build Java JARs (if source code changed)
-echo -e "\n${YELLOW}[1/4] Building Java JARs...${NC}"
+# Step 2: Build Java JARs
+echo -e "\n${YELLOW}[2/4] Building Java JARs...${NC}"
 mvn clean package -DskipTests -q
 echo -e "${GREEN}✓ Java build completed${NC}"
 
-# Step 2: Rebuild Docker images
-echo -e "\n${YELLOW}[2/4] Rebuilding Docker images...${NC}"
-for service in "${SERVICES[@]}"; do
-    echo -e "${YELLOW}Building $service...${NC}"
-    docker-compose build "$service"
-done
+# Step 3: Rebuild Docker images for business services
+echo -e "\n${YELLOW}[3/4] Rebuilding Docker images...${NC}"
+docker-compose build gateway payment order
 echo -e "${GREEN}✓ Docker images rebuilt${NC}"
 
-# Step 3: Restart services
-echo -e "\n${YELLOW}[3/4] Restarting services...${NC}"
-docker-compose up -d "${SERVICES[@]}"
-echo -e "${GREEN}✓ Services restarted${NC}"
+# Step 4: Start business services
+echo -e "\n${YELLOW}[4/4] Starting business services...${NC}"
+docker-compose up -d gateway payment order
+echo -e "${GREEN}✓ Business services started${NC}"
 
-# Step 4: Check status
-echo -e "\n${YELLOW}[4/4] Checking service status...${NC}"
+# Check status
+echo -e "\n${YELLOW}Checking service status...${NC}"
 sleep 5
-for service in "${SERVICES[@]}"; do
+
+services=("gateway" "payment" "order")
+all_running=true
+
+for service in "${services[@]}"; do
     container_name="showcase-pay-$service"
     if docker ps --format '{{.Names}}' | grep -q "$container_name"; then
         echo -e "${GREEN}✓ $container_name is running${NC}"
     else
         echo -e "${RED}✗ $container_name is NOT running${NC}"
-        echo -e "${YELLOW}Logs:${NC}"
-        docker logs "$container_name" --tail 20
+        all_running=false
     fi
 done
 
 echo -e "\n${GREEN}========================================${NC}"
-echo -e "${GREEN}Done! Services are up and running.${NC}"
+if [ "$all_running" = true ]; then
+    echo -e "${GREEN}Done! All business services are up and running.${NC}"
+else
+    echo -e "${RED}Warning: Some services failed to start. Check logs above.${NC}"
+fi
 echo -e "${GREEN}========================================${NC}"

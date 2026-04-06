@@ -25,7 +25,14 @@
       "Bash(python3 *)",
       "Bash(docker inspect *)",
       "Bash(docker restart *)",
-      "Bash(unzip *)"
+      "Bash(unzip *)",
+      "WebSearch",
+      "WebFetch(skywalking.apache.org)",
+      "WebFetch(archive.apache.org)",
+      "Bash(tar *)",
+      "Bash(mkdir *)",
+      "Bash(mv *)",
+      "Bash(cp *)"
     ]
   },
   "$version": 3

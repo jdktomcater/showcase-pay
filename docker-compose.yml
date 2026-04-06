@@ -241,8 +241,10 @@ services:
   # ============================================
   gateway:
     build:
-      context: ./showcase-pay-gateway
-      dockerfile: ../Dockerfile.gateway
+      context: .
+      dockerfile: Dockerfile.gateway
+      args:
+        JAR_FILE: showcase-pay-gateway/target/*.jar
     container_name: showcase-pay-gateway
     ports:
       - "8080:8080"
@@ -269,8 +271,10 @@ services:
   # ============================================
   payment:
     build:
-      context: ./showcase-pay-payment
-      dockerfile: ../Dockerfile.service
+      context: .
+      dockerfile: Dockerfile.service
+      args:
+        JAR_FILE: showcase-pay-payment/target/*.jar
     container_name: showcase-pay-payment
     ports:
       - "8081:8083"
@@ -298,8 +302,10 @@ services:
   # ============================================
   order:
     build:
-      context: ./showcase-pay-order
-      dockerfile: ../Dockerfile.service
+      context: .
+      dockerfile: Dockerfile.service
+      args:
+        JAR_FILE: showcase-pay-order/target/*.jar
     container_name: showcase-pay-order
     ports:
       - "8082:8082"
