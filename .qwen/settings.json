@@ -32,7 +32,11 @@
       "Bash(tar *)",
       "Bash(mkdir *)",
       "Bash(mv *)",
-      "Bash(cp *)"
+      "Bash(cp *)",
+      "Bash(npm create *)",
+      "Bash(npm init *)",
+      "Bash(npm install)",
+      "Bash(npm run *)"
     ]
   },
   "$version": 3

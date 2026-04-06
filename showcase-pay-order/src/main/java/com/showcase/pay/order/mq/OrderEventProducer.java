@@ -60,8 +60,7 @@ public class OrderEventProducer {
         try {
             Message<OrderEventMessage> mqMessage = MessageBuilder.withPayload(message).build();
             rocketMQTemplate.syncSend(topic, mqMessage);
-            log.info("Sent order event to {}: orderNo={}, eventType={}",
-                    topic, message.getOrderNo(), message.getEventType());
+            log.info("Sent order event to {}: orderNo={}, eventType={}", topic, message.getOrderNo(), message.getEventType());
         } catch (Exception e) {
             log.error("Failed to send order event to {}: orderNo={}", topic, message.getOrderNo(), e);
             throw e;

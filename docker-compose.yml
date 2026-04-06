@@ -328,6 +328,21 @@ services:
     networks:
       - showcase-pay-network
 
+  # ============================================
+  # Admin Frontend
+  # ============================================
+  admin:
+    build:
+      context: ./showcase-pay-admin
+      dockerfile: Dockerfile
+    container_name: showcase-pay-admin
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway
+    networks:
+      - showcase-pay-network
+
 volumes:
   mysql-data:
   redis-data:

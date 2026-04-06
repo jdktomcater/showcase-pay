@@ -27,15 +27,13 @@ public class OrderCancelConsumer implements RocketMQListener<OrderEventMessage> 
 
     @Override
     public void onMessage(OrderEventMessage message) {
-        log.info("Received order cancellation event: orderNo={}, userId={}, reason={}",
-                message.getOrderNo(), message.getUserId(), message.getReason());
+        log.info("Received order cancellation event: orderNo={}, userId={}, reason={}", message.getOrderNo(), message.getUserId(), message.getReason());
         try {
             // Call order service to handle cancellation
             orderService.cancelOrder(message.getOrderNo());
             log.info("Successfully processed order cancellation: orderNo={}", message.getOrderNo());
         } catch (Exception e) {
-            log.error("Failed to process order cancellation for orderNo={}: {}",
-                    message.getOrderNo(), e.getMessage(), e);
+            log.error("Failed to process order cancellation for orderNo={}: {}",message.getOrderNo(), e.getMessage(), e);
             throw e;
         }
     }

@@ -2,6 +2,7 @@ package com.showcase.pay.order.mq;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 @Data
 public class PaymentStatusMessage implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String paymentNo;

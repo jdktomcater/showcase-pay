@@ -4,6 +4,12 @@ target/
 *.jar
 *.war
 
+# Node
+node_modules/
+dist/
+.pnp
+.pnp.js
+
 # IDE
 .idea/
 .vscode/

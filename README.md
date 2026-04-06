@@ -360,10 +360,57 @@ This script automatically:
 
 ---
 
+## Admin Panel
+
+The system includes a web-based admin panel built with React + Ant Design for managing orders, payments, and monitoring services.
+
+### Features
+
+- **Dashboard** -- Overview of order/payment statistics and recent activity
+- **Order Management** -- View, search, and cancel orders with detailed information
+- **Payment Management** -- View, search, cancel payments and process refunds
+- **Service Health** -- Monitor the health status of all infrastructure and application services
+
+### Access
+
+| Panel | URL | Description |
+|-------|-----|-------------|
+| Admin Panel | http://localhost:3000 | Web-based admin UI |
+| API Gateway | http://localhost:8080 | API entry point |
+
+### Tech Stack
+
+| Category | Technology |
+|----------|-----------|
+| **Framework** | React 18 |
+| **Build Tool** | Vite 5 |
+| **Language** | TypeScript |
+| **UI Library** | Ant Design 5 |
+| **HTTP Client** | Axios |
+| **Routing** | React Router 6 |
+| **Container** | Nginx (Alpine) |
+
+### Development
+
+```bash
+# Install dependencies
+cd showcase-pay-admin
+npm install
+
+# Start dev server (proxies API to localhost:8080)
+npm run dev
+
+# Build for production
+npm run build
+```
+
+---
+
 ## Service Ports
 
 | Service | Port | Description |
 |---------|------|-------------|
+| **Admin Panel** | 3000 | Web-based admin management UI |
 | **API Gateway** | 8080 | Central entry point for all API requests |
 | **Payment Service** | 8083 | Payment processing microservice (internal port; mapped to 8081 in docker-compose) |
 | **Order Service** | 8082 | Order management microservice |
