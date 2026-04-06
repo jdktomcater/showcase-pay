@@ -124,7 +124,8 @@ showcase-pay/
 │   ├── stop-all.sh               # Stop all services
 │   ├── build.sh                  # Build all modules
 │   ├── start.sh                  # Start individual services
-│   └── stop.sh                   # Stop individual services
+│   ├── stop.sh                   # Stop individual services
+│   └── rebuild-services.sh       # Rebuild and restart business services
 │
 └── sql/
     ├── init.sql                  # Database initialization with sample data
@@ -337,6 +338,25 @@ Access the management consoles:
 # Or using docker-compose directly
 docker-compose down
 ```
+
+### Rebuilding Services After Code Changes
+
+After modifying Java code or configuration files, rebuild and restart the affected services:
+
+```bash
+# Rebuild all business services (gateway, payment, order)
+./scripts/rebuild-services.sh
+
+# Rebuild specific services only
+./scripts/rebuild-services.sh gateway payment
+./scripts/rebuild-services.sh order
+```
+
+This script automatically:
+1. Builds Java JARs with Maven
+2. Rebuilds Docker images
+3. Restarts the services
+4. Checks service health status
 
 ---
 
