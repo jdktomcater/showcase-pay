@@ -213,6 +213,12 @@ services:
         condition: service_healthy
     networks:
       - showcase-pay-network
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/12800"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # ============================================
   # SkyWalking UI
@@ -225,7 +231,8 @@ services:
     environment:
       SW_OAP_ADDRESS: http://skywalking-oap:12800
     depends_on:
-      - skywalking-oap
+      skywalking-oap:
+        condition: service_healthy
     networks:
       - showcase-pay-network
 
@@ -248,6 +255,8 @@ services:
       - ROCKETMQ_NAMESRV=rocketmq-namesrv:9876
       - JAVA_OPTS=-Xms512m -Xmx1024m
       - TZ=Asia/Shanghai
+      - SW_AGENT_NAME=showcase-pay-gateway
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
     depends_on:
       - nacos
       - redis
@@ -274,6 +283,8 @@ services:
       - ROCKETMQ_NAMESRV=rocketmq-namesrv:9876
       - JAVA_OPTS=-Xms512m -Xmx1024m
       - TZ=Asia/Shanghai
+      - SW_AGENT_NAME=showcase-pay-payment
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
     depends_on:
       - nacos
       - redis
@@ -301,6 +312,8 @@ services:
       - ROCKETMQ_NAMESRV=rocketmq-namesrv:9876
       - JAVA_OPTS=-Xms512m -Xmx1024m
       - TZ=Asia/Shanghai
+      - SW_AGENT_NAME=showcase-pay-order
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
     depends_on:
       - nacos
       - redis
