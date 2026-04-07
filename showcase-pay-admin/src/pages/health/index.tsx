@@ -186,6 +186,11 @@ export default function ServiceHealth() {
             if (key === 'elasticsearch') key = 'es'
 
             const serviceHealth = healthData[key] || { status: 'UNKNOWN' }
+            
+            // MySQL and Redis health depends on order service DB/Redis connection
+            const displayStatus = (key === 'mysql' || key === 'redis') 
+              ? (healthData.order?.status || serviceHealth.status)
+              : serviceHealth.status
 
             return (
               <List.Item>
@@ -193,7 +198,7 @@ export default function ServiceHealth() {
                   hoverable
                   style={{
                     textAlign: 'center',
-                    borderColor: serviceHealth.status === 'UP' ? '#52c41a' : serviceHealth.status === 'DOWN' ? '#ff4d4f' : '#d9d9d9',
+                    borderColor: displayStatus === 'UP' ? '#52c41a' : displayStatus === 'DOWN' ? '#ff4d4f' : '#d9d9d9',
                   }}
                 >
                   <div style={{ fontSize: 40, marginBottom: 12 }}>{service.icon}</div>
@@ -201,10 +206,10 @@ export default function ServiceHealth() {
                     <Text strong>{service.name}</Text>
                   </div>
                   <div style={{ marginBottom: 8 }}>
-                    {getStatusIcon(serviceHealth.status)}
+                    {getStatusIcon(displayStatus)}
                   </div>
-                  <Tag color={serviceHealth.status === 'UP' ? 'success' : serviceHealth.status === 'DOWN' ? 'error' : 'default'}>
-                    {serviceHealth.status}
+                  <Tag color={displayStatus === 'UP' ? 'success' : displayStatus === 'DOWN' ? 'error' : 'default'}>
+                    {displayStatus}
                   </Tag>
                 </Card>
               </List.Item>
@@ -248,7 +253,9 @@ export default function ServiceHealth() {
               renderItem={(item) => {
                 const key = item.name.toLowerCase()
                 const mappedKey = key === 'elasticsearch' ? 'es' : key
-                const isUp = healthData[mappedKey]?.status === 'UP'
+                // MySQL and Redis health depends on order service
+                const effectiveKey = (mappedKey === 'mysql' || mappedKey === 'redis') ? 'order' : mappedKey
+                const isUp = healthData[effectiveKey]?.status === 'UP'
                 return (
                   <List.Item>
                     <Space>
