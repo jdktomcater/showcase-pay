@@ -40,7 +40,7 @@ export const orderApi = {
 export const paymentApi = {
   // Get payment list by user ID
   getList: (userId: number, pageNum = 1, pageSize = 10) =>
-    api.get<Result<PageResult<Payment>>>(`/payment/list/${userId}`, {
+    api.get<Result<PageResult<Payment>>>(`/payments/list/${userId}`, {
       params: { pageNum, pageSize },
     }),
 
