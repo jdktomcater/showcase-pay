@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  * Payment record entity mapped to the payment_record table.
  */
 @Data
-@TableName("payment_record")
+@TableName("t_payment_record")
 public class PaymentRecord implements Serializable {
 
     @Serial
