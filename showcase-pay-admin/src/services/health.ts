@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-const gatewayBase = '/api'
-
 export interface HealthResponse {
   status: string
   components?: Record<string, { status: string; details?: Record<string, unknown> }>
