@@ -35,7 +35,7 @@ echo "Building application services..."
 mvn clean package -DskipTests
 
 echo "Starting application services..."
-docker-compose up -d gateway payment order
+docker-compose up -d gateway payment order admin
 
 echo ""
 echo "============================================"
