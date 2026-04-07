@@ -106,7 +106,9 @@ services:
     environment:
       NAMESRV_ADDR: rocketmq-namesrv:9876
       JAVA_OPT_EXT: "-Xms512m -Xmx512m"
-    command: sh mqbroker
+    volumes:
+      - ./docker/rocketmq/broker.conf:/home/rocketmq/rocketmq-5.3.0/conf/broker.conf
+    command: sh mqbroker -c /home/rocketmq/rocketmq-5.3.0/conf/broker.conf
     depends_on:
       rocketmq-namesrv:
         condition: service_healthy
