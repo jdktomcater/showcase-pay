@@ -36,6 +36,10 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
      */
     private static final List<String> WHITE_LIST = List.of(
             "/actuator/**",
+            "/api/orders/actuator/**",
+            "/api/orders/health",
+            "/api/payments/actuator/**",
+            "/api/payments/health",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",

@@ -15,7 +15,7 @@ interface ServiceItem {
 const services: ServiceItem[] = [
   {
     name: 'API Gateway',
-    url: '/actuator/gateway',
+    url: '/actuator/health',
     icon: '🌐',
   },
   {
@@ -25,7 +25,7 @@ const services: ServiceItem[] = [
   },
   {
     name: 'Payment Service',
-    url: '/api/payment/health',
+    url: '/api/payments/health',
     icon: '💳',
   },
   {
@@ -76,9 +76,9 @@ export default function ServiceHealth() {
 
     // Check API services via proxy
     const apiChecks = [
-      { key: 'gateway', url: '/actuator/gateway' },
+      { key: 'gateway', url: '/actuator/health' },
       { key: 'order', url: '/api/orders/health' },
-      { key: 'payment', url: '/api/payment/health' },
+      { key: 'payment', url: '/api/payments/health' },
     ]
 
     for (const check of apiChecks) {

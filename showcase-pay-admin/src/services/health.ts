@@ -18,13 +18,13 @@ export async function checkServiceHealth(url: string): Promise<HealthResponse> {
 
 export const healthApi = {
   // Check gateway health
-  checkGateway: () => checkServiceHealth(`${gatewayBase}/orders/health`),
+  checkGateway: () => checkServiceHealth('/actuator/health'),
 
   // Check order service health (via gateway)
-  checkOrder: () => checkServiceHealth(`${gatewayBase}/orders/health`),
+  checkOrder: () => checkServiceHealth('/api/orders/health'),
 
   // Check payment service health (via gateway)
-  checkPayment: () => checkServiceHealth(`${gatewayBase}/payment/health`),
+  checkPayment: () => checkServiceHealth('/api/payments/health'),
 }
 
 export default healthApi
