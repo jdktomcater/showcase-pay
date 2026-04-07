@@ -70,6 +70,20 @@ export default function ServiceHealth() {
   const [loading, setLoading] = useState(false)
   const [lastCheck, setLastCheck] = useState<string>('')
 
+  const getServiceStatus = (service: ServiceItem): string => {
+    let key = service.name.toLowerCase().replace(' service', '')
+    if (key === 'api gateway') key = 'gateway'
+    if (key === 'order service') key = 'order'
+    if (key === 'payment service') key = 'payment'
+    if (key === 'elasticsearch') key = 'es'
+
+    // MySQL and Redis health depends on order service
+    if (key === 'mysql' || key === 'redis') {
+      return healthData.order?.status || 'UNKNOWN'
+    }
+    return healthData[key]?.status || 'UNKNOWN'
+  }
+
   const checkAllHealth = async () => {
     setLoading(true)
     const results: Record<string, HealthResponse> = {}
@@ -128,8 +142,8 @@ export default function ServiceHealth() {
     )
   }
 
-  const upCount = Object.values(healthData).filter((h) => h.status === 'UP').length
   const totalCount = services.length
+  const upCount = services.filter((s) => getServiceStatus(s) === 'UP').length
 
   return (
     <div>
@@ -178,19 +192,7 @@ export default function ServiceHealth() {
           dataSource={services}
           loading={loading && Object.keys(healthData).length === 0}
           renderItem={(service) => {
-            // Simple mapping for service keys
-            let key = service.name.toLowerCase().replace(' service', '')
-            if (key === 'api gateway') key = 'gateway'
-            if (key === 'order service') key = 'order'
-            if (key === 'payment service') key = 'payment'
-            if (key === 'elasticsearch') key = 'es'
-
-            const serviceHealth = healthData[key] || { status: 'UNKNOWN' }
-            
-            // MySQL and Redis health depends on order service DB/Redis connection
-            const displayStatus = (key === 'mysql' || key === 'redis') 
-              ? (healthData.order?.status || serviceHealth.status)
-              : serviceHealth.status
+            const displayStatus = getServiceStatus(service)
 
             return (
               <List.Item>
@@ -228,15 +230,19 @@ export default function ServiceHealth() {
                 { name: 'Order Service', port: 8082 },
                 { name: 'Payment Service', port: 8083 },
               ]}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space>
-                    <Badge status={healthData[item.name.toLowerCase().replace(' service', '') === 'api gateway' ? 'gateway' : item.name.toLowerCase().split(' ')[0]]?.status === 'UP' ? 'success' : 'error'} />
-                    <Text>{item.name}</Text>
-                    <Text type="secondary">:{item.port}</Text>
-                  </Space>
-                </List.Item>
-              )}
+              renderItem={(item) => {
+                const key = item.name.toLowerCase().replace(' service', '') === 'api' ? 'gateway' : item.name.toLowerCase().split(' ')[0]
+                const isUp = healthData[key]?.status === 'UP'
+                return (
+                  <List.Item>
+                    <Space>
+                      <Badge status={isUp ? 'success' : 'error'} />
+                      <Text>{item.name}</Text>
+                      <Text type="secondary">:{item.port}</Text>
+                    </Space>
+                  </List.Item>
+                )
+              }}
             />
           </Col>
           <Col xs={24} md={12}>

@@ -38,7 +38,8 @@
       "Bash(npm install)",
       "Bash(npm run *)",
       "Bash(jq *)",
-      "Bash(strings *)"
+      "Bash(strings *)",
+      "mcp__idea__replace_text_in_file"
     ]
   },
   "$version": 3
