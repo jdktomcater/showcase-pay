@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/order")
 @Tag(name = "Health", description = "Health check API")
 public class HealthController {
 
