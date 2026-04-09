@@ -42,6 +42,9 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
             "/api/payment/actuator/**",
             "/api/payment/health",
             "/api/payment/**",     // Added for demo access
+            "/api/crypto/actuator/**",
+            "/api/crypto/health",
+            "/api/crypto/**",      // Added for demo access
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",

@@ -49,7 +49,20 @@ spring:
                 redis-rate-limiter.replenishRate: 100
                 redis-rate-limiter.burstCapacity: 200
                 key-resolver: "#{@ipKeyResolver}"
-        
+
+        # Crypto Service Route
+        - id: showcase-pay-crypto
+          uri: lb://showcase-pay-crypto
+          predicates:
+            - Path=/api/crypto/**
+          filters:
+            - StripPrefix=0
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 100
+                redis-rate-limiter.burstCapacity: 200
+                key-resolver: "#{@ipKeyResolver}"
+
         # Swagger Route for Payment Service
         - id: showcase-pay-payment-swagger
           uri: lb://showcase-pay-payment
@@ -57,7 +70,7 @@ spring:
             - Path=/payment/swagger-ui/**
           filters:
             - RewritePath=/payment/swagger-ui/(?<segment>.*), /swagger-ui/${segment}
-        
+
         # Swagger Route for Order Service
         - id: showcase-pay-order-swagger
           uri: lb://showcase-pay-order
@@ -65,6 +78,14 @@ spring:
             - Path=/order/swagger-ui/**
           filters:
             - RewritePath=/order/swagger-ui/(?<segment>.*), /swagger-ui/${segment}
+
+        # Swagger Route for Crypto Service
+        - id: showcase-pay-crypto-swagger
+          uri: lb://showcase-pay-crypto
+          predicates:
+            - Path=/crypto/swagger-ui/**
+          filters:
+            - RewritePath=/crypto/swagger-ui/(?<segment>.*), /swagger-ui/${segment}
       globalcors:
         cors-configurations:
           '[/**]':

@@ -41,7 +41,20 @@ public enum ErrorCode {
 
     // Parameter validation error codes (5xxx)
     PARAM_VALIDATION_FAILED(5001, "Parameter validation failed"),
-    PARAM_MISSING(5002, "Required parameter missing");
+    PARAM_MISSING(5002, "Required parameter missing"),
+
+    // Crypto exchange error codes (6xxx)
+    CRYPTO_INSUFFICIENT_BALANCE(6001, "Insufficient balance"),
+    CRYPTO_ORDER_NOT_FOUND(6002, "Order not found"),
+    CRYPTO_ORDER_STATUS_INVALID(6003, "Invalid order status"),
+    CRYPTO_TRADING_PAIR_SUSPENDED(6004, "Trading pair suspended"),
+    CRYPTO_ORDER_AMOUNT_TOO_SMALL(6005, "Order amount too small"),
+    CRYPTO_ORDER_AMOUNT_TOO_LARGE(6006, "Order amount too large"),
+    CRYPTO_PRICE_DEVIATION_TOO_HIGH(6007, "Price deviation too high"),
+    CRYPTO_MATCHING_ENGINE_ERROR(6008, "Matching engine error"),
+    CRYPTO_ASSET_NOT_SUPPORTED(6009, "Asset not supported"),
+    CRYPTO_ORDER_TOO_MANY(6010, "Too many open orders"),
+    CRYPTO_ORDER_CANCEL_FAILED(6011, "Failed to cancel order");
 
     private final Integer code;
     private final String message;
