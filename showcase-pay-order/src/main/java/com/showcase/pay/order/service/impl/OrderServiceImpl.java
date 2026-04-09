@@ -39,17 +39,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse createOrder(OrderCreateRequest request) {
         // Generate order number
         String orderNo = "ORD" + IdUtil.getSnowflakeNextIdStr();
-
         Order order = new Order();
         BeanUtils.copyProperties(request, order);
         order.setOrderNo(orderNo);
         order.setStatus("CREATED");
         order.setExpireTime(LocalDateTime.now().plusMinutes(30));
-
         orderMapper.insert(order);
-
         log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-
         return convertToResponse(order);
     }
 
@@ -61,21 +57,16 @@ public class OrderServiceImpl implements OrderService {
         if (cached != null) {
             return cached;
         }
-
         // Query from database
         LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Order::getOrderNo, orderNo);
         Order order = orderMapper.selectOne(wrapper);
-
         if (order == null) {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
-
         OrderResponse response = convertToResponse(order);
-
         // Cache the result
         redisTemplate.opsForValue().set(cacheKey, response, CACHE_EXPIRE_HOURS, TimeUnit.HOURS);
-
         return response;
     }
 
@@ -83,18 +74,10 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderResponse> queryOrdersByUserId(Long userId, Integer pageNum, Integer pageSize) {
         Page<Order> page = new Page<>(pageNum, pageSize);
         LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Order::getUserId, userId)
-               .orderByDesc(Order::getCreateTime);
-
+        wrapper.eq(Order::getUserId, userId).orderByDesc(Order::getCreateTime);
         Page<Order> orderPage = orderMapper.selectPage(page, wrapper);
-
         Page<OrderResponse> responsePage = new Page<>(pageNum, pageSize, orderPage.getTotal());
-        responsePage.setRecords(
-            orderPage.getRecords().stream()
-                .map(this::convertToResponse)
-                .toList()
-        );
-
+        responsePage.setRecords(orderPage.getRecords().stream().map(this::convertToResponse).toList());
         return responsePage;
     }
 
@@ -104,22 +87,16 @@ public class OrderServiceImpl implements OrderService {
         LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Order::getOrderNo, orderNo);
         Order order = orderMapper.selectOne(wrapper);
-
         if (order == null) {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
-
         if (!"CREATED".equals(order.getStatus()) && !"PENDING_PAYMENT".equals(order.getStatus())) {
-            throw new BusinessException(ErrorCode.ORDER_STATUS_INVALID,
-                    "Only created or pending payment orders can be cancelled");
+            throw new BusinessException(ErrorCode.ORDER_STATUS_INVALID, "Only created or pending payment orders can be cancelled");
         }
-
         order.setStatus("CANCELLED");
         orderMapper.updateById(order);
-
         // Clear cache
         redisTemplate.delete(ORDER_CACHE_PREFIX + orderNo);
-
         log.info("Order cancelled: orderNo={}", orderNo);
     }
 
@@ -129,23 +106,18 @@ public class OrderServiceImpl implements OrderService {
         LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Order::getOrderNo, orderNo);
         Order order = orderMapper.selectOne(wrapper);
-
         if (order == null) {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
-
         if ("SUCCESS".equals(paymentStatus)) {
             order.setStatus("PAID");
             order.setPayTime(LocalDateTime.now());
         } else if ("FAILED".equals(paymentStatus)) {
             order.setStatus("CREATED");
         }
-
         orderMapper.updateById(order);
-
         // Clear cache
         redisTemplate.delete(ORDER_CACHE_PREFIX + orderNo);
-
         log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
     }
 

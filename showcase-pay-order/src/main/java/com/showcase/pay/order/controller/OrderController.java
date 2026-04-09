@@ -26,16 +26,13 @@ public class OrderController {
     @PostMapping("/create")
     @Operation(summary = "Create Order")
     public Result<OrderResponse> createOrder(@Valid @RequestBody OrderCreateRequest request) {
-        OrderResponse response = orderService.createOrder(request);
-        return Result.success(response);
+        return Result.success(orderService.createOrder(request));
     }
 
     @GetMapping("/query")
     @Operation(summary = "Get Order Details")
-    public Result<OrderResponse> getOrder(
-            @Parameter(description = "Order Number") @RequestParam String orderNo) {
-        OrderResponse response = orderService.getOrderByOrderNo(orderNo);
-        return Result.success(response);
+    public Result<OrderResponse> getOrder(@Parameter(description = "Order Number") @RequestParam String orderNo) {
+        return Result.success(orderService.getOrderByOrderNo(orderNo));
     }
 
     @GetMapping("/list")
@@ -44,14 +41,12 @@ public class OrderController {
             @Parameter(description = "User ID") @RequestParam Long userId,
             @Parameter(description = "Page Number") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "Page Size") @RequestParam(defaultValue = "10") Integer pageSize) {
-        Page<OrderResponse> page = orderService.queryOrdersByUserId(userId, pageNum, pageSize);
-        return Result.success(page);
+        return Result.success(orderService.queryOrdersByUserId(userId, pageNum, pageSize));
     }
 
     @PostMapping("/cancel")
     @Operation(summary = "Cancel Order")
-    public Result<Void> cancelOrder(
-            @Parameter(description = "Order Number") @RequestParam String orderNo) {
+    public Result<Void> cancelOrder(@Parameter(description = "Order Number") @RequestParam String orderNo) {
         orderService.cancelOrder(orderNo);
         return Result.success();
     }
