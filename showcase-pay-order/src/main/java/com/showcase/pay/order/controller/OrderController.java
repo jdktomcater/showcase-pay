@@ -16,42 +16,42 @@ import org.springframework.web.bind.annotation.*;
  * Order Controller
  */
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/order")
 @RequiredArgsConstructor
 @Tag(name = "Order API", description = "Order management APIs")
 public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping
+    @PostMapping("/create")
     @Operation(summary = "Create Order")
     public Result<OrderResponse> createOrder(@Valid @RequestBody OrderCreateRequest request) {
         OrderResponse response = orderService.createOrder(request);
         return Result.success(response);
     }
 
-    @GetMapping("/{orderNo}")
+    @GetMapping("/query")
     @Operation(summary = "Get Order Details")
     public Result<OrderResponse> getOrder(
-            @Parameter(description = "Order Number") @PathVariable String orderNo) {
+            @Parameter(description = "Order Number") @RequestParam String orderNo) {
         OrderResponse response = orderService.getOrderByOrderNo(orderNo);
         return Result.success(response);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/list")
     @Operation(summary = "Query User Orders")
     public Result<Page<OrderResponse>> queryUserOrders(
-            @Parameter(description = "User ID") @PathVariable Long userId,
+            @Parameter(description = "User ID") @RequestParam Long userId,
             @Parameter(description = "Page Number") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "Page Size") @RequestParam(defaultValue = "10") Integer pageSize) {
         Page<OrderResponse> page = orderService.queryOrdersByUserId(userId, pageNum, pageSize);
         return Result.success(page);
     }
 
-    @PostMapping("/{orderNo}/cancel")
+    @PostMapping("/cancel")
     @Operation(summary = "Cancel Order")
     public Result<Void> cancelOrder(
-            @Parameter(description = "Order Number") @PathVariable String orderNo) {
+            @Parameter(description = "Order Number") @RequestParam String orderNo) {
         orderService.cancelOrder(orderNo);
         return Result.success();
     }

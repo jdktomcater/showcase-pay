@@ -20,22 +20,22 @@ const services: ServiceItem[] = [
   },
   {
     name: 'Order Service',
-    url: '/api/orders/health',
+    url: '/api/order/health',
     icon: '📋',
   },
   {
     name: 'Payment Service',
-    url: '/api/payments/health',
+    url: '/api/payment/health',
     icon: '💳',
   },
   {
     name: 'MySQL',
-    url: '/api/orders/health',
+    url: '/api/order/health',
     icon: '🗄️',
   },
   {
     name: 'Redis',
-    url: '/api/orders/health',
+    url: '/api/order/health',
     icon: '⚡',
   },
   {
@@ -91,8 +91,8 @@ export default function ServiceHealth() {
     // Check API services via proxy
     const apiChecks = [
       { key: 'gateway', url: '/actuator/health' },
-      { key: 'order', url: '/api/orders/health' },
-      { key: 'payment', url: '/api/payments/health' },
+      { key: 'order', url: '/api/order/health' },
+      { key: 'payment', url: '/api/payment/health' },
     ]
 
     for (const check of apiChecks) {

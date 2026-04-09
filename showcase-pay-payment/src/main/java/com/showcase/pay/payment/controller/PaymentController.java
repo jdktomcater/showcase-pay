@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("/api/payment")
 @RequiredArgsConstructor
 @Tag(name = "Payment", description = "Payment processing API")
 public class PaymentController {
@@ -60,10 +60,10 @@ public class PaymentController {
      * @param paymentNo the payment number
      * @return updated payment detail
      */
-    @GetMapping("/status/{paymentNo}")
+    @GetMapping("/status")
     @Operation(summary = "Query payment status", description = "Query payment status from the third-party gateway")
     public Result<PaymentDetailDTO> queryPaymentStatus(
-            @Parameter(description = "Payment number") @PathVariable String paymentNo) {
+            @Parameter(description = "Payment number") @RequestParam String paymentNo) {
         log.info("Received payment status query: paymentNo={}", paymentNo);
         PaymentDetailDTO detail = paymentService.queryPaymentStatus(paymentNo);
         return Result.success(detail);
@@ -77,10 +77,10 @@ public class PaymentController {
      * @param pageSize page size
      * @return paginated payment records
      */
-    @GetMapping("/list/{userId}")
+    @GetMapping("/list")
     @Operation(summary = "Query payment list", description = "Query payment records for a user with pagination")
     public Result<Page<PaymentDetailDTO>> queryPaymentList(
-            @Parameter(description = "User ID") @PathVariable Long userId,
+            @Parameter(description = "User ID") @RequestParam Long userId,
             @Parameter(description = "Page number") @RequestParam(defaultValue = "1") int pageNum,
             @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int pageSize) {
         log.info("Received payment list query: userId={}, page={}, size={}", userId, pageNum, pageSize);
@@ -107,10 +107,10 @@ public class PaymentController {
      * @param paymentNo the payment number
      * @return processing result
      */
-    @PostMapping("/cancel/{paymentNo}")
+    @PostMapping("/cancel")
     @Operation(summary = "Cancel payment", description = "Cancel a pending or processing payment")
     public Result<String> cancelPayment(
-            @Parameter(description = "Payment number") @PathVariable String paymentNo) {
+            @Parameter(description = "Payment number") @RequestParam String paymentNo) {
         log.info("Received payment cancel request: paymentNo={}", paymentNo);
         String result = paymentService.cancelPayment(paymentNo);
         return Result.success("Payment cancelled successfully", result);

@@ -32,10 +32,10 @@ export const healthApi = {
   checkGateway: () => checkServiceHealth('/actuator/health'),
 
   // Check order service health (via gateway)
-  checkOrder: () => checkServiceHealth('/api/orders/health'),
+  checkOrder: () => checkServiceHealth('/api/order/health'),
 
   // Check payment service health (via gateway)
-  checkPayment: () => checkServiceHealth('/api/payments/health'),
+  checkPayment: () => checkServiceHealth('/api/payment/health'),
 }
 
 export default healthApi

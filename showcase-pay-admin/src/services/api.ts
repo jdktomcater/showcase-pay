@@ -24,24 +24,28 @@ api.interceptors.response.use(
 export const orderApi = {
   // Get order list by user ID
   getList: (userId: number, pageNum = 1, pageSize = 10) =>
-    api.get<Result<PageResult<Order>>>(`/orders/user/${userId}`, {
-      params: { pageNum, pageSize },
+    api.get<Result<PageResult<Order>>>('/order/list', {
+      params: { userId, pageNum, pageSize },
     }),
 
   // Get order detail
   getDetail: (orderNo: string) =>
-    api.get<Result<Order>>(`/orders/${orderNo}`),
+    api.get<Result<Order>>('/order/query', {
+      params: { orderNo },
+    }),
 
   // Cancel order
   cancel: (orderNo: string) =>
-    api.post<Result<void>>(`/orders/${orderNo}/cancel`),
+    api.post<Result<void>>('/order/cancel', null, {
+      params: { orderNo },
+    }),
 }
 
 export const paymentApi = {
   // Get payment list by user ID
   getList: (userId: number, pageNum = 1, pageSize = 10) =>
-    api.get<Result<PageResult<Payment>>>(`/payments/list/${userId}`, {
-      params: { pageNum, pageSize },
+    api.get<Result<PageResult<Payment>>>('/payment/list', {
+      params: { userId, pageNum, pageSize },
     }),
 
   // Query payment detail
@@ -50,11 +54,15 @@ export const paymentApi = {
 
   // Query payment status from gateway
   queryStatus: (paymentNo: string) =>
-    api.get<Result<Payment>>(`/payment/status/${paymentNo}`),
+    api.get<Result<Payment>>('/payment/status', {
+      params: { paymentNo },
+    }),
 
   // Cancel payment
   cancel: (paymentNo: string) =>
-    api.post<Result<string>>(`/payment/cancel/${paymentNo}`),
+    api.post<Result<string>>('/payment/cancel', null, {
+      params: { paymentNo },
+    }),
 
   // Process refund
   refund: (paymentNo: string, refundAmount: number, reason: string) =>
