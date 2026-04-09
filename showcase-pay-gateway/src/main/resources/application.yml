@@ -28,7 +28,7 @@ spring:
         - id: showcase-pay-payment
           uri: lb://showcase-pay-payment
           predicates:
-            - Path=/api/payments/**
+            - Path=/api/payment/**
           filters:
             - StripPrefix=0
             - name: RequestRateLimiter
@@ -41,7 +41,7 @@ spring:
         - id: showcase-pay-order
           uri: lb://showcase-pay-order
           predicates:
-            - Path=/api/orders/**
+            - Path=/api/order/**
           filters:
             - StripPrefix=0
             - name: RequestRateLimiter
