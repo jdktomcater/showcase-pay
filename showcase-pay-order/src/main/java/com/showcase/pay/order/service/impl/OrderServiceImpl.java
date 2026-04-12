@@ -47,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.insert(order);
         log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
         log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
+        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
         return convertToResponse(order);
     }
 
