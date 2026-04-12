@@ -46,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
         order.setExpireTime(LocalDateTime.now().plusMinutes(30));
         orderMapper.insert(order);
         log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
+        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
         return convertToResponse(order);
     }
 
