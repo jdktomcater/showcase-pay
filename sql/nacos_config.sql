@@ -383,7 +383,7 @@ spring:
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/showcase_pay?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       minimum-idle: 5
@@ -415,7 +415,7 @@ spring:
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/showcase_pay?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       minimum-idle: 5
@@ -489,7 +489,7 @@ spring:
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/showcase_pay?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       minimum-idle: 5
@@ -517,15 +517,15 @@ payment:
   gateway:
     alipay:
       app-id: ${ALIPAY_APP_ID:mock_alipay_app_id}
-      private-key: ${ALIPAY_PRIVATE_KEY:mock_alipay_private_key}
-      alipay-public-key: ${ALIPAY_PUBLIC_KEY:mock_alipay_public_key}
+      private-key: ${ALIPAY_PRIVATE_KEY}
+      alipay-public-key: ${ALIPAY_PUBLIC_KEY}
       server-url: https://openapi.alipaydev.com/gateway.do
       notify-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/callback
       return-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/return
     wechat:
       app-id: ${WECHAT_APP_ID:mock_wechat_app_id}
       mch-id: ${WECHAT_MCH_ID:mock_wechat_mch_id}
-      api-key: ${WECHAT_API_KEY:mock_wechat_api_key}
+      api-key: ${WECHAT_API_KEY}
       notify-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/callback
       cert-path: ${WECHAT_CERT_PATH:/etc/certs/wechat/}
 ',
@@ -538,7 +538,7 @@ spring:
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/showcase_pay?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       minimum-idle: 5
@@ -566,15 +566,15 @@ payment:
   gateway:
     alipay:
       app-id: ${ALIPAY_APP_ID:mock_alipay_app_id}
-      private-key: ${ALIPAY_PRIVATE_KEY:mock_alipay_private_key}
-      alipay-public-key: ${ALIPAY_PUBLIC_KEY:mock_alipay_public_key}
+      private-key: ${ALIPAY_PRIVATE_KEY}
+      alipay-public-key: ${ALIPAY_PUBLIC_KEY}
       server-url: https://openapi.alipaydev.com/gateway.do
       notify-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/callback
       return-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/return
     wechat:
       app-id: ${WECHAT_APP_ID:mock_wechat_app_id}
       mch-id: ${WECHAT_MCH_ID:mock_wechat_mch_id}
-      api-key: ${WECHAT_API_KEY:mock_wechat_api_key}
+      api-key: ${WECHAT_API_KEY}
       notify-url: ${PAYMENT_BASE_URL:http://localhost:8083}/api/payment/callback
       cert-path: ${WECHAT_CERT_PATH:/etc/certs/wechat/}
 '),

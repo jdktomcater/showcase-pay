@@ -616,13 +616,16 @@ Services support environment variable overrides for key settings:
 | `MYSQL_HOST` | 127.0.0.1 | MySQL host |
 | `MYSQL_PORT` | 3306 | MySQL port |
 | `MYSQL_USERNAME` | root | MySQL username |
-| `MYSQL_PASSWORD` | root | MySQL password |
+| `MYSQL_PASSWORD` | required | MySQL password |
 | `REDIS_HOST` | 127.0.0.1 | Redis host |
 | `REDIS_PORT` | 6379 | Redis port |
 | `REDIS_PASSWORD` | (empty) | Redis password |
 | `ROCKETMQ_NAMESRV` | 127.0.0.1:9876 | RocketMQ NameServer address |
 | `ALIPAY_APP_ID` | (mock) | Alipay application ID |
+| `ALIPAY_PRIVATE_KEY` | required | Alipay private key |
+| `ALIPAY_PUBLIC_KEY` | required | Alipay public key |
 | `WECHAT_APP_ID` | (mock) | WeChat application ID |
+| `WECHAT_API_KEY` | required | WeChat payment API key |
 
 ---
 
