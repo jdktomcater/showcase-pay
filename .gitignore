@@ -24,6 +24,7 @@ Thumbs.db
 
 # Logs
 *.log
+.env
 
 # Skywalking agent (downloaded separately)
 docker/skywalking/
