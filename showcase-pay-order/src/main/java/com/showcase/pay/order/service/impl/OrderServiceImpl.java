@@ -102,6 +102,7 @@ public class OrderServiceImpl implements OrderService {
         responsePage.setRecords(orderPage.getRecords().stream().map(this::convertToResponse).toList());
         log.info("queryOrdersByUserId: responsePage={}", responsePage);
         log.info("queryOrdersByUserId: responsePage={}", responsePage);
+        log.info("queryOrdersByUserId: responsePage={}", responsePage);
         return responsePage;
     }
 
