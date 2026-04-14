@@ -124,6 +124,7 @@ public class OrderServiceImpl implements OrderService {
         redisTemplate.delete(ORDER_CACHE_PREFIX + orderNo);
         log.info("Order cancelled: orderNo={}", orderNo);
         log.info("Order cancelled: orderNo={}", orderNo);
+        log.info("Order cancelled: orderNo={}", orderNo);
     }
 
     @Override
