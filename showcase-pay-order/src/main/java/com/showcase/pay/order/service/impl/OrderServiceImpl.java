@@ -71,6 +71,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
         log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
         log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
+        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
         return convertToResponse(order);
     }
 
