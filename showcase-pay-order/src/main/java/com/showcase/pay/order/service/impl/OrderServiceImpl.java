@@ -143,6 +143,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Order cancelled: orderNo={}", orderNo);
         log.info("Order cancelled: orderNo={}", orderNo);
         log.info("Order cancelled: orderNo={}", orderNo);
+        log.info("Order cancelled: orderNo={}", orderNo);
     }
 
     @Override
