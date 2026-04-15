@@ -164,6 +164,7 @@ public class OrderServiceImpl implements OrderService {
         redisTemplate.delete(ORDER_CACHE_PREFIX + orderNo);
         log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
         log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
+        log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
     }
 
     private OrderResponse convertToResponse(Order order) {
