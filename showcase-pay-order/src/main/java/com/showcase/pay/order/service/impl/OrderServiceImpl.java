@@ -45,36 +45,6 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus("CREATED");
         order.setExpireTime(LocalDateTime.now().plusMinutes(30));
         orderMapper.insert(order);
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
-        log.info("Order created: orderNo={}, userId={}", orderNo, request.getUserId());
         return convertToResponse(order);
     }
 
@@ -107,15 +77,6 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> orderPage = orderMapper.selectPage(page, wrapper);
         Page<OrderResponse> responsePage = new Page<>(pageNum, pageSize, orderPage.getTotal());
         responsePage.setRecords(orderPage.getRecords().stream().map(this::convertToResponse).toList());
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
-        log.info("queryOrdersByUserId: responsePage={}", responsePage);
         return responsePage;
     }
 
@@ -135,21 +96,6 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.updateById(order);
         // Clear cache
         redisTemplate.delete(ORDER_CACHE_PREFIX + orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
-        log.info("Order cancelled: orderNo={}", orderNo);
     }
 
     @Override
@@ -170,11 +116,6 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.updateById(order);
         // Clear cache
         redisTemplate.delete(ORDER_CACHE_PREFIX + orderNo);
-        log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
-        log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
-        log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
-        log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
-        log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
     }
 
     private OrderResponse convertToResponse(Order order) {
