@@ -173,6 +173,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
         log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
         log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
+        log.info("Order payment status updated: orderNo={}, paymentStatus={}", orderNo, paymentStatus);
     }
 
     private OrderResponse convertToResponse(Order order) {
