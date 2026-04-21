@@ -44,7 +44,8 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderNo(orderNo);
         order.setStatus("CREATED");
         order.setExpireTime(LocalDateTime.now().plusMinutes(30));
-        orderMapper.insert(order);
+        int result = orderMapper.insert(order);
+        log.info("保存结果：{}", result);
         return convertToResponse(order);
     }
 
