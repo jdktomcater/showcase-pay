@@ -47,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
         int result = orderMapper.insert(order);
         log.info("保存结果：{}", result);
         log.info("保存结果：{}", result);
+        log.info("保存结果：{}", result);
         return convertToResponse(order);
     }
 
